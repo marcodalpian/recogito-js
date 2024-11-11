@@ -262,43 +262,48 @@ export default class Highlighter {
   }
 
   wrapRange = (range, commonRoot) => {
-    const root = commonRoot ? commonRoot : this.el;
+    try{
+      const root = commonRoot ? commonRoot : this.el;
 
-    const surround = range => {
-      var wrapper = document.createElement('SPAN');
-      range.surroundContents(wrapper);
-      return wrapper;
-    };
-
-    if (range.startContainer === range.endContainer) {
-      return [ surround(range) ];
-    } else {
-      // The tricky part - we need to break the range apart and create
-      // sub-ranges for each segment
-      var nodesBetween =
-        this.textNodesBetween(range.startContainer, range.endContainer, root);
-
-      // Start with start and end nodes
-      var startRange = document.createRange();
-      startRange.selectNodeContents(range.startContainer);
-      startRange.setStart(range.startContainer, range.startOffset);
-      var startWrapper = surround(startRange);
-
-      var endRange = document.createRange();
-      endRange.selectNode(range.endContainer);
-      endRange.setEnd(range.endContainer, range.endOffset);
-      var endWrapper = surround(endRange);
-
-      // And wrap nodes in between, if any
-      var centerWrappers = nodesBetween.reverse().map(function(node) {
-        const wrapper = document.createElement('SPAN');
-        node.parentNode.insertBefore(wrapper, node);
-        wrapper.appendChild(node);
+      const surround = range => {
+        var wrapper = document.createElement('SPAN');
+        range.surroundContents(wrapper);
         return wrapper;
-      });
-
-      return [ startWrapper ].concat(centerWrappers,  [ endWrapper ]);
-    }
+      };
+  
+      if (range.startContainer === range.endContainer) {
+        return [ surround(range) ];
+      } else {
+        // The tricky part - we need to break the range apart and create
+        // sub-ranges for each segment
+        var nodesBetween =
+          this.textNodesBetween(range.startContainer, range.endContainer, root);
+  
+        // Start with start and end nodes
+        var startRange = document.createRange();
+        startRange.selectNodeContents(range.startContainer);
+        startRange.setStart(range.startContainer, range.startOffset);
+        var startWrapper = surround(startRange);
+  
+        var endRange = document.createRange();
+        endRange.selectNode(range.endContainer);
+        endRange.setEnd(range.endContainer, range.endOffset);
+        var endWrapper = surround(endRange);
+  
+        // And wrap nodes in between, if any
+        var centerWrappers = nodesBetween.reverse().map(function(node) {
+          const wrapper = document.createElement('SPAN');
+          node.parentNode.insertBefore(wrapper, node);
+          wrapper.appendChild(node);
+          return wrapper;
+        });
+  
+        return [ startWrapper ].concat(centerWrappers,  [ endWrapper ]);
+      }
+    } catch(error){
+      alert("You cant select text which ends with a newline.");
+      console.log(error);
+    } 
   }
 
   getAnnotationsAt = element => {
