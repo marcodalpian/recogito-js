@@ -79,7 +79,12 @@ export default class SelectionHandler extends EventEmitter {
         if (contains(this.el, commonAncestorContainer)) {
           const stub = rangeToSelection(selectedRange, this.el);
 
-          const spans = this.highlighter.wrapRange(selectedRange);
+          try{
+            const spans = this.highlighter.wrapRange(selectedRange);
+          } catch(error){
+            alert("You cant select text which ends with a newline.");
+            console.log(error);
+          } 
           spans.forEach(span => span.className = 'r6o-selection');
 
           this._hideNativeSelection();
