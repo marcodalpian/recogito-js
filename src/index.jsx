@@ -1,6 +1,3 @@
-"use client";
-
-import { ErrorBoundary } from "react-error-boundary";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Emitter from 'tiny-emitter';
@@ -71,7 +68,6 @@ export class Recogito {
     setLocale(config.locale);
 
     ReactDOM.render(
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
         <TextAnnotator
           ref={this._app}
           env={this._environment}
@@ -83,9 +79,7 @@ export class Recogito {
           onAnnotationUpdated={this.handleAnnotationUpdated}
           onAnnotationDeleted={this.handleAnnotationDeleted}
           onCancelSelected={this.handleCancelSelected}
-          relationVocabulary={config.relationVocabulary} />
-      </ErrorBoundary>
-        , this._appContainerEl);
+          relationVocabulary={config.relationVocabulary} /> , this._appContainerEl);
   }
 
   handleAnnotationSelected = (annotation, element) =>
